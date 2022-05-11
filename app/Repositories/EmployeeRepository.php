@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\EmployeeStatusNotMatch;
 use App\Models\Employee;
 use App\Models\Reference;
 
@@ -10,7 +11,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
     public function store($request)
     {
         if (!Reference::where('id', $request->status_id)->where('code', 'employee_status')->exists()) {
-            return response()->json(['error' => 'status_id given not match'], 422);
+            throw new EmployeeStatusNotMatch;
         }
         
         return Employee::create($request->all());

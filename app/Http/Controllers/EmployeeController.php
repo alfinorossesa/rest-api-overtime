@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\EmployeeStatusNotMatch;
 use App\Http\Requests\EmployeeRequest;
 use App\Repositories\EmployeeRepositoryInterface;
 use Illuminate\Support\Facades\Log;
@@ -19,9 +20,11 @@ class EmployeeController extends Controller
     {
         try {
             return $this->employee->store($request);
+        } catch (EmployeeStatusNotMatch $exception) {
+            throw $exception->validationException();
         } catch (\Throwable $th) {
             Log::info($th);
-            return response()->json(['error' => 'error'], 500);
+            return response()->json(['error' => 'you get error'], 500);
         } 
     }
 

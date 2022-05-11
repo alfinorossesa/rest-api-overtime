@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\OvertimeEmployeeNotFound;
+use App\Exceptions\OvertimeException;
 use App\Http\Requests\OvertimeRequest;
+use App\Http\Resources\OvertimePay;
 use App\Repositories\OvertimeRepositoryInterface;
 use Illuminate\Support\Facades\Log;
 
@@ -19,6 +22,8 @@ class OvertimeController extends Controller
     { 
         try {
             return $this->overtime->store($request);
+        } catch(OvertimeEmployeeNotFound $exception) {
+            throw $exception->validationException();
         } catch (\Throwable $th) {
             Log::info($th);
             return response()->json(['error' => 'you get error'], 500);
@@ -32,6 +37,6 @@ class OvertimeController extends Controller
 
     public function calculate()
     {
-        return $this->overtime->calculate();
+        return OvertimePay::collection($this->overtime->calculate());
     }
 }

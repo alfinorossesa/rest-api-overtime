@@ -2,7 +2,9 @@
 
 namespace App\Repositories;
 
-use App\Http\Resources\OvertimePay;
+use App\Exceptions\OvertimeDateStartedMustBeFirst;
+use App\Exceptions\OvertimeEmployeeNotFound;
+use App\Exceptions\OvertimeMustHaveMonth;
 use App\Models\Employee;
 use App\Models\Overtime;
 
@@ -11,7 +13,7 @@ class OvertimeRepository implements OvertimeRepositoryInterface
     public function store($request)
     {
         if (!Employee::where('id', $request->employee_id)->first()) {
-            return response()->json(['error' => 'employee not found'], 404);
+            throw new OvertimeEmployeeNotFound;
         }
 
         return Overtime::create($request->all());
@@ -27,7 +29,7 @@ class OvertimeRepository implements OvertimeRepositoryInterface
                     $overtime = $overtimes->whereBetween('date', [request('date_started'), request('date_ended')])->get();
                     return $overtime;
                 } else {
-                    return response()->json(['error' => 'date started must be first'], 422);
+                    throw new OvertimeDateStartedMustBeFirst;
                 }
             }
         }
@@ -39,9 +41,9 @@ class OvertimeRepository implements OvertimeRepositoryInterface
     {
         if (request()->has('month')) {
             $overtimes = Overtime::where('date', 'like', '%'. request('month') .'%')->get();
-            return OvertimePay::collection($overtimes);
+            return $overtimes;
         }
 
-        return response()->json(['error' => 'please select month'], 200);
+        throw new OvertimeMustHaveMonth;
     }
 }

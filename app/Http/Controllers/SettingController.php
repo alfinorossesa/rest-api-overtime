@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\SettingKeyNotMatch;
+use App\Exceptions\SettingValueNotMatch;
 use App\Http\Requests\SettingRequest;
 use App\Models\Setting;
 use App\Repositories\SettingRepositoryInterface;
@@ -26,8 +28,13 @@ class SettingController extends Controller
     {
         try {
             return $this->setting->setting($request);
+        } catch(SettingKeyNotMatch $exception) {
+            throw $exception->validationException();
+        } catch(SettingValueNotMatch $exception) {
+            throw $exception->validationException();
         } catch (\Throwable $th) {
             Log::info($th);
+            return response()->json(['error' => 'you get error'], 500);
         }
     }
 }
