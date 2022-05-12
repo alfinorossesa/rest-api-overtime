@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\EmployeeStatusNotMatch;
 use App\Http\Requests\EmployeeRequest;
-use App\Repositories\EmployeeRepositoryInterface;
+use App\Services\EmployeeService;
 use Illuminate\Support\Facades\Log;
 
 class EmployeeController extends Controller
 {
     private $employee;
 
-    public function __construct(EmployeeRepositoryInterface $employee)
+    public function __construct(EmployeeService $employee)
     {
         $this->employee = $employee;
     }
@@ -19,7 +19,7 @@ class EmployeeController extends Controller
     public function store(EmployeeRequest $request)
     {
         try {
-            return $this->employee->store($request);
+            return $this->employee->employeeStore($request);
         } catch (EmployeeStatusNotMatch $exception) {
             throw $exception->validationException();
         } catch (\Throwable $th) {
@@ -30,7 +30,7 @@ class EmployeeController extends Controller
 
     public function index()
     {
-        return $this->employee->all();
+        return $this->employee->getEmployee();
     }
 
 }

@@ -5,15 +5,14 @@ namespace App\Http\Controllers;
 use App\Exceptions\SettingKeyNotMatch;
 use App\Exceptions\SettingValueNotMatch;
 use App\Http\Requests\SettingRequest;
-use App\Models\Setting;
-use App\Repositories\SettingRepositoryInterface;
+use App\Services\SettingService;
 use Illuminate\Support\Facades\Log;
 
 class SettingController extends Controller
 {
     private $setting;
 
-    public function __construct(SettingRepositoryInterface $setting)
+    public function __construct(SettingService $setting)
     {
         $this->setting = $setting;
     }
@@ -27,7 +26,7 @@ class SettingController extends Controller
     public function __invoke(SettingRequest $request)
     {
         try {
-            return $this->setting->setting($request);
+            return $this->setting->changeSetting($request);
         } catch(SettingKeyNotMatch $exception) {
             throw $exception->validationException();
         } catch(SettingValueNotMatch $exception) {
