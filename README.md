@@ -1,3 +1,6 @@
+### Note :
+Laravel 8
+
 ## Application Install Instructions
 
 1. copy _.env.example_ into _.env_ 
