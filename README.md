@@ -1,16 +1,5 @@
-### Note :
-Laravel 8
 
-## Application Install Instructions
-
-1. copy _.env.example_ into _.env_ 
-2. Setup _database_ in _.env_ 
-3. Run `php artisan config:cache`
-4. Run `php artisan key:generate`
-5. Run `php artisan migrate`
-6. `php artisan serve`
-
-## Routes
+### Routes
 
 ```
 PATCH   /api/settings
